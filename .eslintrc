@@ -1,0 +1,25 @@
+{
+  "root": true /*Đặt giá trị true để chỉ định rằng tệp .eslintrc là tệp cấu hình gốc và không nên tìm kiếm các tệp cấu hình lên cấp trên của nó.*/,
+  "parser": "@typescript-eslint/parser", //Sử dụng trình phân tích cú pháp
+  "plugins": ["@typescript-eslint", "prettier"], //  Liệt kê các plugin được sử dụng trong quá trình kiểm tra mã, bao gồm @typescript-eslint (cung cấp các quy tắc kiểm tra TypeScript) và prettier (để tích hợp với Prettier, công cụ định dạng mã).
+  "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended", "eslint-config-prettier", "prettier"],
+  "rules": {
+    "@typescript-eslint/no-explicit-any": "off", // để không cảnh báo khi sử dụng kiểu any
+    "@typescript-eslint/no-unused-vars": "off", // để không cảnh báo khi biến không được sử dụng trong TypeScript.
+    "@typescript-eslint/no-empty-function": "off",
+    "prettier/prettier": [
+      "warn",
+      {
+        "arrowParens": "always", // Luôn đặt dấu ngoặc đơn quanh tham số của hàm mũi tên.
+        "semi": false, // Loại bỏ việc sử dụng dấu chấm phẩy sau mỗi câu lệnh trong mã.
+        "trailingComma": "none", //  Không sử dụng dấu phẩy cuối cùng trong các danh sách và đối tượng (arrays và objects).
+        "tabWidth": 2, // : Sử dụng kí tự tab với độ rộng là 2 kí tự để thụt lề.
+        "endOfLine": "auto", // Tự động xác định ký tự kết thúc dòng (line endings) dựa trên hệ thống môi trường.
+        "useTabs": false, //  Không sử dụng kí tự tab để thụt lề, thay vào đó sử dụng khoảng trắng.
+        "singleQuote": true, // Sử dụng dấu nháy đơn (') cho các chuỗi.
+        "printWidth": 120, //  Giới hạn độ dài của một dòng mã không vượt quá 120 kí tự.
+        "jsxSingleQuote": true // Sử dụng dấu nháy đơn (') cho các chuỗi trong JSX.
+      }
+    ]
+  }
+}

@@ -1,0 +1,3 @@
+[*]
+indent_size = 2 # : Đặt độ rộng thụt lề thành 2 dấu cách. Điều này có nghĩa là mỗi cấp độ thụt lề sẽ được thực hiện bằng 2 dấu cách.
+indent_style = space #  Sử dụng dấu cách để thụt lề thay vì sử dụng kí tự tab. Điều này có nghĩa là thụt lề trong mã sẽ sử dụng các dấu cách để tạo khoảng trống thay vì sử dụng kí tự tab.

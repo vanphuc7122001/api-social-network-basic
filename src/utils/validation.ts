@@ -1,0 +1,29 @@
+import express from 'express'
+import { validationResult, ValidationChain } from 'express-validator'
+import { RunnableValidationChains } from 'express-validator/src/middlewares/schema'
+import HTTP_STATUS from '~/constants/httpStatus'
+import { EntityError, ErrorWithStatus } from '~/models/Errors'
+// can be reused by many routes
+
+// sequential processing, stops running validations chain if the previous one fails.
+export const validate = (validation: RunnableValidationChains<ValidationChain>) => {
+  return async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    await validation.run(req) // run the validation current request
+    const errors = await validationResult(req) // check errors
+    const errorsObject = errors.mapped()
+    const entityError = new EntityError({ errors: {} })
+
+    for (const key in errorsObject) {
+      const { msg } = errorsObject[key]
+      if (msg instanceof ErrorWithStatus && msg.status !== HTTP_STATUS.UNPROCESSABLE_CONTENT) {
+        return next(msg)
+      }
+      entityError.errors = msg
+    }
+
+    if (errors.isEmpty()) {
+      next()
+    }
+    return res.status(422).json({ errors: errors.mapped() })
+  }
+}
