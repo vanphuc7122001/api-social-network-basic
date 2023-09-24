@@ -10,6 +10,9 @@ export const validate = (validation: RunnableValidationChains<ValidationChain>) 
   return async (req: express.Request, res: express.Response, next: express.NextFunction) => {
     await validation.run(req) // run the validation current request
     const errors = await validationResult(req) // check errors
+    if (errors.isEmpty()) {
+      return next()
+    }
     const errorsObject = errors.mapped()
     const entityError = new EntityError({ errors: {} })
 
@@ -18,12 +21,9 @@ export const validate = (validation: RunnableValidationChains<ValidationChain>) 
       if (msg instanceof ErrorWithStatus && msg.status !== HTTP_STATUS.UNPROCESSABLE_CONTENT) {
         return next(msg)
       }
-      entityError.errors = msg
+      entityError.errors[key] = errorsObject[key]
     }
 
-    if (errors.isEmpty()) {
-      next()
-    }
-    return res.status(422).json({ errors: errors.mapped() })
+    next(entityError)
   }
 }

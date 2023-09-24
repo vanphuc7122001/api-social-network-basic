@@ -1,4 +1,3 @@
-import { extend } from 'lodash'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { USERS_MESSAGE } from '~/constants/messages'
 
@@ -6,9 +5,6 @@ type ErrorsType = Record<
   string,
   {
     msg: string
-    location: string
-    value: any
-    path: string
     [key: string]: any
   }
 >
@@ -30,4 +26,4 @@ export class EntityError extends ErrorWithStatus {
   }
 }
 
-const error = new EntityError({ errors: {} })
+// const error = new EntityError({ errors: {} })
