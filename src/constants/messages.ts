@@ -1,4 +1,4 @@
-export const USERS_MESSAGE = {
+export const USERS_MESSAGES = {
   VALIDATION_ERROR: 'Validation error',
   NAME_IS_REQUIRED: 'Name is required',
   NAME_MUST_BE_A_STRING: 'Name must be a string',
@@ -63,5 +63,9 @@ export const USERS_MESSAGE = {
   UPLOAD_SUCCESS: 'Upload success',
   REFRESH_TOKEN_SUCCESS: 'Refresh token success',
   GET_VIDEO_STATUS_SUCCESS: 'Get video status success',
-  EMAIL_OR_PASSWORD__INCORRECT: 'Email or password incorrect'
+  EMAIL_OR_PASSWORD__INCORRECT: 'Email or password incorrect',
+  DATE_OF_BIRTH_IS_REQUIRED: 'Date of birth is required',
+  FORGOT_PASSWORD_TOKEN_IS_STRING: 'Forgot password token is string',
+  USERNAME_LENGTH: 'Username length must be from 1 to 50',
+  INVALID_FOLLOWED_USER_ID: 'Invalid follow user id'
 } as const

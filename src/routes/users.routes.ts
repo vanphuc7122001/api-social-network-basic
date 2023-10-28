@@ -1,12 +1,38 @@
 import { wrapRequestHandler } from './../utils/handlers'
 import { Router } from 'express'
-import { loginController, logoutController, registerController } from '~/controllers/users.controllers'
+import {
+  changePasswordController,
+  emailVerifyTokenController,
+  followController,
+  forgotPasswordController,
+  getMeController,
+  getProfileController,
+  loginController,
+  logoutController,
+  registerController,
+  resendVerifyEmailController,
+  resetPasswordController,
+  unfollowController,
+  updateMeController,
+  verifyForgotPasswordController
+} from '~/controllers/users.controllers'
+import { filterMiddleware } from '~/middlewares/common.middlewares'
 import {
   accessTokenValidator,
+  changePasswordValidator,
+  emailVerifyTokenValidator,
+  followValidator,
+  forgotPasswordValidator,
   loginValidator,
   refreshTokenValidator,
-  registerValidator
+  registerValidator,
+  resetPasswordValidator,
+  unfollowValidator,
+  updateMeValidator,
+  verifiedUserValidator,
+  verifyForgotPasswordValidator
 } from '~/middlewares/users.middlewares'
+import { UpdateMeReqBody } from '~/models/requests/User.requests'
 const userRouter = Router()
 
 /**
@@ -29,8 +55,139 @@ userRouter.post('/register', registerValidator, wrapRequestHandler(registerContr
  * Description: Logout user
  * Method : POST
  * Path : /register
+ * Headers : Brear Authorization
  * Body :  {name: string, email: string, password: string, confirm_password: string, date_of_birth: ISO8261}
  */
 userRouter.post('/logout', accessTokenValidator, refreshTokenValidator, wrapRequestHandler(logoutController))
+
+/**
+ * Description: Verify email when user client click on link in email
+ * Method : POST
+ * Path : /verify-email
+ * Body : email_verify_token
+ */
+userRouter.post('/verify-email', emailVerifyTokenValidator, wrapRequestHandler(emailVerifyTokenController))
+
+/**
+ * Description. Resend email when user client click on the link in email
+ * Path: /resend-verify-email
+ * Method: POST
+ * Header: { Authorization: Bearer <access_token> }
+ * Body: {}
+ */
+userRouter.post('/resend-verify-email', accessTokenValidator, wrapRequestHandler(resendVerifyEmailController))
+
+/**
+ * Description.  submit email to reset password, send email to user
+ * Path: /forgot-password
+ * Method: POST
+ * Body: {email: string}
+ */
+userRouter.post('/forgot-password', forgotPasswordValidator, wrapRequestHandler(forgotPasswordController))
+
+/**
+ * Description. Verify link in email to reset password
+ * Path: /verify-forgot-password
+ * Method: POST
+ * Body: {forgot_password_token: string}
+ */
+userRouter.post(
+  '/verify-forgot-password',
+  verifyForgotPasswordValidator,
+  wrapRequestHandler(verifyForgotPasswordController)
+)
+
+/**
+ * Description: Reset password
+ * Path: /reset-password
+ * Method: POST
+ * Body: {forgot_password_token: string, password: string, confirm_password: string}
+ */
+userRouter.post('/reset-password', resetPasswordValidator, wrapRequestHandler(resetPasswordController))
+
+/**
+ * Description: Get my profile
+ * Path: /me
+ * Method: GET
+ * Header: { Authorization: Bearer <access_token> }
+ */
+userRouter.get('/me', accessTokenValidator, wrapRequestHandler(getMeController))
+
+/**
+ * Description: Update my profile
+ * Path: /me
+ * Method: PATCH
+ * Header: { Authorization: Bearer <access_token> }
+ * Body: UserSchema
+ */
+userRouter.patch(
+  '/me',
+  accessTokenValidator,
+  verifiedUserValidator,
+  updateMeValidator,
+  filterMiddleware<UpdateMeReqBody>([
+    'avatar',
+    'bio',
+    'cover_photo',
+    'date_of_birth',
+    'location',
+    'name',
+    'username',
+    'website'
+  ]),
+  wrapRequestHandler(updateMeController)
+)
+
+/**
+ * Description: Get user profile
+ * Path: /:username
+ * Method: GET
+ */
+userRouter.get('/:username', wrapRequestHandler(getProfileController))
+
+/**
+ * Description: follow someone
+ * Path: /follow
+ * Method: POST
+ * Headers : {Authorization: Bearer <access_token>}
+ * Body: {followed_user_id: string}
+ */
+userRouter.post(
+  '/follow',
+  accessTokenValidator,
+  verifiedUserValidator,
+  followValidator,
+  wrapRequestHandler(followController)
+)
+
+/**
+ * Description: unfollow someone
+ * Path: /follow/:user_id
+ * Method: DELETE
+ * Headers : {Authorization: Bearer <access_token>}
+ * Params: {followed_user_id: string}
+ */
+userRouter.delete(
+  '/follow/:followed_user_id',
+  accessTokenValidator,
+  verifiedUserValidator,
+  unfollowValidator,
+  wrapRequestHandler(unfollowController)
+)
+
+/**
+ * Description: change password user
+ * Path: /change-password
+ * Method: DELETE
+ * Headers : {Authorization: Bearer <access_token>}
+ * Body: {old_password: string,password: string,  new_password: string}
+ */
+userRouter.patch(
+  '/change-password',
+  accessTokenValidator,
+  verifiedUserValidator,
+  changePasswordValidator,
+  wrapRequestHandler(changePasswordController)
+)
 
 export default userRouter
