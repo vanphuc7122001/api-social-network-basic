@@ -69,3 +69,10 @@ export const USERS_MESSAGES = {
   USERNAME_LENGTH: 'Username length must be from 1 to 50',
   INVALID_FOLLOWED_USER_ID: 'Invalid follow user id'
 } as const
+
+export const MEDIA_MESSAGES = {
+  IMAGE_NOT_FOUND: 'Image not found',
+  UPLOAD_IMAGE_SINGLE_SUCCESS: 'Uploading image signle success',
+  UPLOAD_IMAGE_MULTIPLE_SUCCESS: 'Uploading image multiple success',
+  UPLOAD_VIDEO_MULTIPLE_SUCCESS: 'Uploading video multiple success'
+} as const

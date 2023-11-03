@@ -18,7 +18,7 @@ interface PayloadToken {
   verify: UserVerifyStatus
 }
 
-class UsersService {
+class UserService {
   private signAccessToken({ user_id, verify }: PayloadToken) {
     return signToken({
       payload: {
@@ -328,5 +328,5 @@ class UsersService {
   }
 }
 
-const usersService = new UsersService()
-export default usersService
+const userService = new UserService()
+export default userService

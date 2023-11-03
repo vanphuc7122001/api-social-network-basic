@@ -18,7 +18,7 @@ import {
   VerifyForgotPassReq
 } from '~/models/requests/User.requests'
 
-import usersService from '~/services/users.services'
+import UserService from '~/services/users.services'
 import User from '~/models/schemas/User.schema'
 import HTTP_STATUS from '~/constants/httpStatus'
 
@@ -30,7 +30,7 @@ export const loginController = async (
   const { _id, verify } = req.user as User
   const user_id = _id?.toString() as string
 
-  const result = await usersService.login({ user_id, verify })
+  const result = await UserService.login({ user_id, verify })
   return res.json({
     message: USERS_MESSAGES.LOGIN_SUCCESS,
     result
@@ -42,7 +42,7 @@ export const registerController = async (
   res: Response,
   next: NextFunction
 ) => {
-  const result = await usersService.register(req.body)
+  const result = await UserService.register(req.body)
   return res.json({
     message: USERS_MESSAGES.REGISTER_SUCCESS,
     result
@@ -55,7 +55,7 @@ export const logoutController = async (
   next: NextFunction
 ) => {
   const { refresh_token } = req.body
-  await usersService.logout(refresh_token)
+  await UserService.logout(refresh_token)
   return res.json({
     message: USERS_MESSAGES.LOGOUT_SUCCESS
   })
@@ -67,7 +67,7 @@ export const emailVerifyTokenController = async (
   next: NextFunction
 ) => {
   const { user_id } = req.decoded_email_verify_token as TokenPayload
-  const user = await usersService.findUserById(user_id)
+  const user = await UserService.findUserById(user_id)
   // kiểm tra user này có tồn tại trong database hay không
   if (!user) {
     return res.status(HTTP_STATUS.NOT_FOUND).json({
@@ -82,7 +82,7 @@ export const emailVerifyTokenController = async (
     })
   }
 
-  const result = await usersService.verifyEmail(user_id.toString())
+  const result = await UserService.verifyEmail(user_id.toString())
   return res.json({
     message: USERS_MESSAGES.EMAIL_VERIFY_SUCCESS,
     result
@@ -91,7 +91,7 @@ export const emailVerifyTokenController = async (
 
 export const resendVerifyEmailController = async (req: Request, res: Response, next: NextFunction) => {
   const { user_id } = req.decoded_authorization as TokenPayload
-  const user = await usersService.findUserById(user_id)
+  const user = await UserService.findUserById(user_id)
 
   if (!user) {
     return res.status(HTTP_STATUS.NOT_FOUND).json({
@@ -105,7 +105,7 @@ export const resendVerifyEmailController = async (req: Request, res: Response, n
     })
   }
 
-  await usersService.resendVerifyEmail(user_id)
+  await UserService.resendVerifyEmail(user_id)
 
   return res.json({
     message: USERS_MESSAGES.RESEND_VERIFY_EMAIL_SUCCESS
@@ -119,7 +119,7 @@ export const forgotPasswordController = async (
 ) => {
   const { _id, verify } = req.user as User
   const user_id = _id?.toString() as string
-  await usersService.forgotPassword({ user_id, verify })
+  await UserService.forgotPassword({ user_id, verify })
   return res.json({
     message: USERS_MESSAGES.CHECK_EMAIL_TO_RESET_PASSWORD
   })
@@ -142,7 +142,7 @@ export const resetPasswordController = async (
 ) => {
   const { user_id } = req.decoded_forgot_password_token as TokenPayload
   const { password } = req.body
-  await usersService.resetPassword(user_id, password)
+  await UserService.resetPassword(user_id, password)
   return res.json({
     message: USERS_MESSAGES.RESET_PASSWORD_SUCCESS
   })
@@ -150,7 +150,7 @@ export const resetPasswordController = async (
 
 export const getMeController = async (req: Request, res: Response, next: NextFunction) => {
   const { user_id } = req.decoded_authorization as TokenPayload
-  const result = await usersService.getMe(user_id)
+  const result = await UserService.getMe(user_id)
   return res.json({
     message: USERS_MESSAGES.GET_ME_SUCCESS,
     result
@@ -164,7 +164,7 @@ export const updateMeController = async (
 ) => {
   const { user_id } = req.decoded_authorization as TokenPayload
   const { body } = req
-  const result = await usersService.updateMe(user_id, body)
+  const result = await UserService.updateMe(user_id, body)
   return res.json({
     message: USERS_MESSAGES.UPDATE_ME_SUCCESS,
     result
@@ -173,7 +173,7 @@ export const updateMeController = async (
 
 export const getProfileController = async (req: Request<GetProfileReqParams>, res: Response, next: NextFunction) => {
   const { username } = req.params
-  const result = await usersService.getProfile(username)
+  const result = await UserService.getProfile(username)
   return res.json({
     message: USERS_MESSAGES.GET_PROFILE_SUCCESS,
     result
@@ -187,14 +187,14 @@ export const followController = async (
 ) => {
   const { user_id } = req.decoded_authorization as TokenPayload
   const { followed_user_id } = req.body
-  const result = await usersService.follow(user_id, followed_user_id)
+  const result = await UserService.follow(user_id, followed_user_id)
   return res.json(result)
 }
 
 export const unfollowController = async (req: Request<UnFollowReqParams>, res: Response, next: NextFunction) => {
   const { user_id } = req.decoded_authorization as TokenPayload
   const { followed_user_id } = req.params
-  const result = await usersService.unFollow(user_id, followed_user_id)
+  const result = await UserService.unFollow(user_id, followed_user_id)
   return res.json(result)
 }
 
@@ -205,6 +205,6 @@ export const changePasswordController = async (
 ) => {
   const { user_id } = req.decoded_authorization as TokenPayload
   const { new_password } = req.body
-  const result = await usersService.changePassword(user_id, new_password)
+  const result = await UserService.changePassword(user_id, new_password)
   return res.json(result)
 }
