@@ -21,7 +21,11 @@ app.use(express.urlencoded({ extended: true }))
 app.use('/static/videos', express.static(UPLOAD_VIDEOS_DIR))
 
 initRoutes(app)
-databaseService.connect()
+databaseService.connect().then(() => {
+  databaseService.indexUsers()
+  databaseService.indexFollowers()
+  databaseService.indexRefreshTokens()
+})
 
 app.use(defaultErrorHandler)
 

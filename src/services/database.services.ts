@@ -27,6 +27,37 @@ class DatabaseService {
     }
   }
 
+  async indexUsers() {
+    const exists = await this.users.indexExists(['email_1_password_1', 'email_1', 'username_1'])
+    if (!exists) {
+      this.users.createIndex({ email: 1, password: 1 })
+      this.users.createIndex({ email: 1 }, { unique: true })
+      this.users.createIndex({ username: 1 }, { unique: true })
+    }
+  }
+
+  async indexRefreshTokens() {
+    const exists = await this.refreshTokens.indexExists(['token_1', 'exp_1'])
+    if (!exists) {
+      this.refreshTokens.createIndex({ token: 1 })
+      this.refreshTokens.createIndex(
+        {
+          exp: 1
+        },
+        {
+          expireAfterSeconds: 0
+        }
+      )
+    }
+  }
+
+  indexFollowers() {
+    const exists = this.followers.indexExists(['user_id_1', 'followed_user_id_1'])
+    if (!exists) {
+      this.followers.createIndex({ user_id: 1, followed_user_id: 1 })
+    }
+  }
+
   get users(): Collection<User> {
     return this.db.collection(process.env.DB_USER_COLLECTION as string)
   }
