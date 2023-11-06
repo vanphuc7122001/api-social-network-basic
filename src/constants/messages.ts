@@ -74,5 +74,6 @@ export const MEDIA_MESSAGES = {
   IMAGE_NOT_FOUND: 'Image not found',
   UPLOAD_IMAGE_SINGLE_SUCCESS: 'Uploading image signle success',
   UPLOAD_IMAGE_MULTIPLE_SUCCESS: 'Uploading image multiple success',
-  UPLOAD_VIDEO_MULTIPLE_SUCCESS: 'Uploading video multiple success'
+  UPLOAD_VIDEO_MULTIPLE_SUCCESS: 'Uploading video multiple success',
+  RANGE_IS_REQUIRE: 'Range is required'
 } as const

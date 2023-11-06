@@ -51,8 +51,8 @@ class MediaService {
       videos.map(async (video) => {
         return {
           url: isProduction
-            ? `${process.env.HOST}static/images/${video.newFilename}`
-            : `http://localhost:${process.env.PORT}/static/images/${video.newFilename}`,
+            ? `${process.env.HOST}static/videos/${video.newFilename}`
+            : `http://localhost:${process.env.PORT}/static/videos/${video.newFilename}`,
           type: MediaType.Video
         }
       })

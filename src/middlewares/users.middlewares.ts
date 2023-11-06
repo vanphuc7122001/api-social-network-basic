@@ -316,7 +316,6 @@ export const refreshTokenValidator = validate(
                 status: 401
               })
             }
-
             try {
               const [decoded_refresh_token, refresh_token] = await Promise.all([
                 verifyToken({

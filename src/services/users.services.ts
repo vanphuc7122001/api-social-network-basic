@@ -11,6 +11,7 @@ import { ErrorWithStatus } from '~/models/Errors'
 import { USERS_MESSAGES } from '~/constants/messages'
 import HTTP_STATUS from '~/constants/httpStatus'
 import Follower from '~/models/schemas/Follower.schema'
+import axios from 'axios'
 config()
 
 interface PayloadToken {
@@ -130,6 +131,86 @@ class UserService {
     }
   }
 
+  private async getOauthToken(code: string) {
+    const body = {
+      code,
+      client_id: process.env.GOOGLE_CLIENT_ID,
+      client_secret: process.env.GOOGLE_CLIENT_SECRET,
+      redirect_uri: process.env.GOOGLE_REDIRECT_URL,
+      grant_type: 'authorization_code'
+    }
+
+    const { data } = await axios.post('https://oauth2.googleapis.com/token', body, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    })
+
+    return data
+  }
+
+  private async getOauthUserInfo(access_token: string, id_token: string) {
+    const { data } = await axios.get('https://www.googleapis.com/oauth2/v1/userinfo', {
+      params: {
+        access_token
+      },
+      headers: {
+        Authorization: `Bearer ${id_token}`
+      }
+    })
+
+    return data as {
+      id: string
+      email: string
+      verified_email: boolean
+      name: string
+      picture: string
+    }
+  }
+
+  async oauth(code: string) {
+    const { id_token, access_token } = await this.getOauthToken(code)
+    const userInfo = await this.getOauthUserInfo(access_token, id_token)
+    if (!userInfo.verified_email) {
+      throw new ErrorWithStatus({
+        message: USERS_MESSAGES.GMAIL_NOT_VERIFIED,
+        status: HTTP_STATUS.BAD_REQUEST
+      })
+    }
+
+    const isUser = await databaseService.users.findOne({ email: userInfo.email })
+    if (isUser) {
+      const [access_token, refresh_token] = await this.signAccessAndRefreshToken({
+        user_id: isUser._id.toString(),
+        verify: isUser.verify
+      })
+      await databaseService.refreshTokens.insertOne({
+        user_id: isUser._id,
+        token: refresh_token as string
+      })
+
+      return {
+        access_token,
+        refresh_token,
+        newUser: 1
+      }
+    } else {
+      const password = Math.random().toString(36).slice(-8)
+      const { access_token, refresh_token } = await this.register({
+        confirm_password: password,
+        date_of_birth: new Date().toISOString(),
+        email: userInfo.email,
+        name: userInfo.name,
+        password
+      })
+      return {
+        access_token,
+        refresh_token,
+        newUser: 2
+      }
+    }
+  }
+
   async logout(refresh_token: string) {
     await databaseService.refreshTokens.deleteOne({ token: refresh_token })
   }
@@ -152,6 +233,12 @@ class UserService {
     ])
 
     const [access_token, refresh_token] = token
+    await databaseService.refreshTokens.insertOne(
+      new RefreshToken({
+        token: refresh_token as string,
+        user_id: new ObjectId(user_id)
+      })
+    )
 
     return {
       access_token,
@@ -324,6 +411,31 @@ class UserService {
     )
     return {
       message: USERS_MESSAGES.CHANGE_PASSWORD_SUCCESS
+    }
+  }
+
+  async refreshToken({
+    user_id,
+    refresh_token,
+    verify
+  }: {
+    user_id: string
+    refresh_token: string
+    verify: UserVerifyStatus
+  }) {
+    const [new_access_token, new_refresh_token] = await Promise.all([
+      this.signAccessToken({ user_id, verify }),
+      this.signRefreshToken({ user_id, verify }),
+      databaseService.refreshTokens.deleteOne({ token: refresh_token })
+    ])
+
+    await databaseService.refreshTokens.insertOne({
+      token: new_refresh_token as string,
+      user_id: new ObjectId(user_id)
+    })
+    return {
+      access_token: new_access_token,
+      refresh_token: new_refresh_token
     }
   }
 }

@@ -9,6 +9,8 @@ import {
   getProfileController,
   loginController,
   logoutController,
+  oauthController,
+  refreshTokenController,
   registerController,
   resendVerifyEmailController,
   resetPasswordController,
@@ -44,6 +46,14 @@ const userRouter = Router()
 userRouter.post('/login', loginValidator, wrapRequestHandler(loginController))
 
 /**
+ * Description: Login with google credentials
+ * Path: /oauth/google
+ * Method: GET
+ *
+ */
+userRouter.get('/oauth/google', wrapRequestHandler(oauthController))
+
+/**
  * Description: Register a new user
  * Method : POST
  * Path : /register
@@ -59,6 +69,14 @@ userRouter.post('/register', registerValidator, wrapRequestHandler(registerContr
  * Body :  {name: string, email: string, password: string, confirm_password: string, date_of_birth: ISO8261}
  */
 userRouter.post('/logout', accessTokenValidator, refreshTokenValidator, wrapRequestHandler(logoutController))
+
+/**
+ * Description: refresh token
+ * Method : POST
+ * Path : //refresh-token
+ * Body :  {refresh_token : string}
+ */
+userRouter.post('/refresh-token', refreshTokenValidator, wrapRequestHandler(refreshTokenController))
 
 /**
  * Description: Verify email when user client click on link in email
@@ -189,5 +207,13 @@ userRouter.patch(
   changePasswordValidator,
   wrapRequestHandler(changePasswordController)
 )
+
+/**
+ * Description: Login with google credentials
+ * Path: /oauth/google
+ * Method: POST
+ *
+ */
+userRouter.post('/oauth/google', wrapRequestHandler(oauthController))
 
 export default userRouter

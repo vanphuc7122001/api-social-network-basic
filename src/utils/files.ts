@@ -3,11 +3,6 @@ import formidable, { Fields, Files, File } from 'formidable'
 import fs from 'fs'
 import { UPLOAD_IMAGES_TEM_DIR, UPLOAD_VIDEOS_DIR } from '~/constants/dir'
 
-interface ResultUploadFileImg {
-  file: Fields<string>
-  files: Files<string>
-}
-
 export const initFolder = () => {
   ;[UPLOAD_VIDEOS_DIR, UPLOAD_IMAGES_TEM_DIR].forEach((folder) => {
     if (!fs.existsSync(folder)) {
@@ -43,15 +38,15 @@ export const handleUploadSignleImage = (req: Request) => {
       // file la file gui len
       const isEmpty = Boolean(files.fileName)
       if (err) {
-        reject(err)
+        return reject(err)
       }
 
       if (!isEmpty) {
-        reject(new Error('File is required'))
+        return reject(new Error('File is required'))
       }
 
       // if (files) {
-      resolve((files.fileName as File[])[0])
+      return resolve((files.fileName as File[])[0])
     })
   })
 }
@@ -79,18 +74,17 @@ export const handleUploadImage = (req: Request) => {
       // console.log('fields', fields, 'files', files)
       // fields la cac truong gui len con lai
       // file la file gui len
-      console.log('Array file', files)
       const isEmpty = Boolean(files.fileName)
       if (err) {
-        reject(err)
+        return reject(err)
       }
 
       if (!isEmpty) {
-        reject(new Error('File is required'))
+        return reject(new Error('File is required'))
       }
 
       // if (files) {
-      resolve(files.fileName as File[])
+      return resolve(files.fileName as File[])
     })
   })
 }
@@ -114,18 +108,18 @@ export const handleUploadVideos = (req: Request) => {
     form.parse(req, (err, fields, files) => {
       const isVideo = Boolean(files.videos)
       if (err) {
-        reject(err)
+        return reject(err)
       }
       if (!isVideo) {
-        reject(new Error('Video is required'))
+        return reject(new Error('Video is required'))
       }
       const videos = files.videos as File[]
       videos.forEach((video) => {
         const ext = getExtension(video.originalFilename as string)
         fs.renameSync(video.filepath, `${video.filepath}.${ext}`)
-        video.newFilename = `${video.filepath}.${ext}`
+        video.newFilename = `${video.newFilename}.${ext}`
       })
-      resolve(files.videos as File[])
+      return resolve(files.videos as File[])
     })
   })
 }
