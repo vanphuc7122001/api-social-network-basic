@@ -79,5 +79,16 @@ export const MEDIA_MESSAGES = {
 } as const
 
 export const TWEET_MESSAGES = {
-  CREATE_TWEET_SUCCESS: 'create tweet successfully'
+  CREATE_TWEET_SUCCESS: 'create tweet successfully',
+  INVALID_TYPE: 'invalid type',
+  INVALID_AUDIENCE: 'invalid audience',
+  PARENT_ID_MUST_BE_A_VALID_TWEET_ID: 'parent_id must be a valid tweet id',
+  PARENT_ID_MUST_BE_NULL: 'parent_id must be null',
+  CONTENT_MUST_BE_STRING: 'content must be a string',
+  CONTENT_MUST_BE_A_NON_EMPTY_STRING: 'content must be a non empty string',
+  CONTENT_MUST_BE_EMPTY: 'content must be empty',
+  HASTAGS_MUST_BE_ARRAY: 'hastags must be array',
+  HASTAGS_MUST_BE_AN_ARRAY_OF_STRING: 'hastags must be an array of string',
+  MENTIONS_MUST_BE_AN_ARRAY_OF_OBJECT_ID: 'mentions must be an array of object id',
+  MEDIAS_MUST_BE_AN_ARRAY_OF_MEDIA_OBJECT: 'media object must be an array of media object'
 } as const

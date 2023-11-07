@@ -5,7 +5,7 @@ import {
 } from '~/controllers/media.controllers'
 import { wrapRequestHandler } from '../utils/handlers'
 import { Router } from 'express'
-import { accessTokenValidator } from '~/middlewares/users.middlewares'
+import { accessTokenValidator } from '~/middlewares/user.middlewares'
 
 const mediaRouters = Router()
 

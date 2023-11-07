@@ -33,7 +33,7 @@ import {
   updateMeValidator,
   verifiedUserValidator,
   verifyForgotPasswordValidator
-} from '~/middlewares/users.middlewares'
+} from '~/middlewares/user.middlewares'
 import { UpdateMeReqBody } from '~/models/requests/User.requests'
 const userRouters = Router()
 
