@@ -92,12 +92,18 @@ export const createTweetValidator = validate(
         }
       },
       mentions: {
-        isArray: true,
+        isArray: {
+          errorMessage: TWEET_MESSAGES.MENTIONS_MUST_BE_AN_ARRAY
+        },
         custom: {
           options: (value, { req }) => {
-            // Yêu cầu mỗi phần từ trong array là ObjectId
-            if (value.some((item: any) => !ObjectId.isValid(item))) {
-              throw new Error(TWEET_MESSAGES.MENTIONS_MUST_BE_AN_ARRAY_OF_OBJECT_ID)
+            const isObjectId = value.every((item: any) => {
+              return ObjectId.isValid(item)
+            })
+
+            // Yêu cầu mỗi phần từ trong array là string và nó phải là ObjectId
+            if (!isObjectId) {
+              throw new Error(TWEET_MESSAGES.MENTIONS_MUST_BE_AN_ARRAY_OF_STRING_AND_MUST_BE_OBJECT_ID)
             }
             return true
           }

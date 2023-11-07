@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 import { MEDIA_MESSAGES } from '~/constants/messages'
-import mediaService from '~/services/medias.services'
+import mediaService from '~/services/media.service'
 
 export const uploadSignleImageController = async (req: Request, res: Response, next: NextFunction) => {
   const result = await mediaService.handleUploadSignleImage(req)

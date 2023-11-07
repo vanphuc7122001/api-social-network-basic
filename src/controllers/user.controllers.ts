@@ -19,7 +19,7 @@ import {
   VerifyForgotPassReq
 } from '~/models/requests/User.requests'
 
-import userService from '~/services/users.services'
+import userService from '~/services/user.service'
 import User from '~/models/schemas/User.schema'
 import HTTP_STATUS from '~/constants/httpStatus'
 

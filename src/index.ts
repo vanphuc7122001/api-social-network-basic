@@ -2,7 +2,7 @@ import express from 'express'
 import cors, { CorsOptions } from 'cors'
 import { initRoutes } from './routes/index.routes'
 import { defaultErrorHandler } from './middlewares/error.middlewares'
-import databaseService from './services/database.services'
+import databaseService from './services/database.service'
 import { initFolder } from './utils/files'
 import { UPLOAD_VIDEOS_DIR } from './constants/dir'
 const app = express()

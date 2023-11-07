@@ -1,5 +1,6 @@
 import { ObjectId } from 'mongodb'
 import { TweetAudience, TweetType } from '~/constants/enums'
+import { Media } from '../Other'
 
 interface TweetContructor {
   _id?: ObjectId
@@ -7,12 +8,12 @@ interface TweetContructor {
   type: TweetType
   audience: TweetAudience
   content: string
-  parent_id: null | ObjectId //  chỉ null khi tweet gốc
-  hashtags: ObjectId[]
-  mentions: ObjectId[]
-  medias: ObjectId[]
-  guest_views: number
-  user_views: number
+  parent_id: null | string //  chỉ null khi tweet gốc
+  hashtags: string[]
+  mentions: string[]
+  medias: Media[]
+  guest_views?: number
+  user_views?: number
   created_at?: Date
   updated_at?: Date
 }
@@ -26,9 +27,9 @@ export default class Tweet {
   parent_id: null | ObjectId //  chỉ null khi tweet gốc
   hashtags: ObjectId[]
   mentions: ObjectId[]
-  medias: ObjectId[]
-  guest_views: number
-  user_views: number
+  medias: Media[]
+  guest_views?: number
+  user_views?: number
   created_at?: Date
   updated_at?: Date
   constructor(tweet: TweetContructor) {
@@ -38,12 +39,12 @@ export default class Tweet {
     this.type = tweet.type
     this.audience = tweet.audience
     this.content = tweet.content
-    this.parent_id = tweet.parent_id
-    this.hashtags = tweet.hashtags
-    this.mentions = tweet.mentions
+    this.parent_id = tweet.parent_id ? new ObjectId(tweet.parent_id) : null
+    this.hashtags = tweet.hashtags.map((item) => new ObjectId(item))
+    this.mentions = tweet.mentions.map((item) => new ObjectId(item))
     this.medias = tweet.medias
-    this.guest_views = tweet.guest_views
-    this.user_views = tweet.user_views
+    this.guest_views = tweet.guest_views || 0
+    this.user_views = tweet.user_views || 0
     this.created_at = tweet.created_at || date
     this.updated_at = tweet.updated_at || date
   }

@@ -1,4 +1,4 @@
-import databaseService from '~/services/database.services'
+import databaseService from '~/services/database.service'
 import User from '~/models/schemas/User.schema'
 import { RegisterReqBody, UpdateMeReqBody } from '~/models/requests/User.requests'
 import { hashPassword } from '~/utils/crypto'
