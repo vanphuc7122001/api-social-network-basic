@@ -1,9 +1,9 @@
 import { Router } from 'express'
 import { staticImageController, staticVideoStreamController } from '~/controllers/static.controller'
 
-const staticRouter = Router()
+const staticRouters = Router()
 
-staticRouter.get('/images/:name', staticImageController)
-staticRouter.get('/videos-stream/:name', staticVideoStreamController)
+staticRouters.get('/images/:name', staticImageController)
+staticRouters.get('/videos-stream/:name', staticVideoStreamController)
 
-export default staticRouter
+export default staticRouters

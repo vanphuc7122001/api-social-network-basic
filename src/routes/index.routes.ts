@@ -1,10 +1,12 @@
-import mediasRouter from './medias.routes'
-import staticRouter from './static.routes'
-import userRouter from './users.routes'
+import mediaRouters from './media.routes'
+import staticRouters from './static.routes'
+import tweetRouters from './tweet.routes'
+import userRouters from './user.routes'
 import { Express } from 'express'
 
 export const initRoutes = (app: Express) => {
-  app.use('/api/users', userRouter)
-  app.use('/api/medias', mediasRouter)
-  app.use('/static', staticRouter)
+  app.use('/api/users', userRouters)
+  app.use('/api/medias', mediaRouters)
+  app.use('/api/tweets', tweetRouters)
+  app.use('/static', staticRouters)
 }

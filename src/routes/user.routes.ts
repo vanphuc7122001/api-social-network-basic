@@ -1,4 +1,4 @@
-import { wrapRequestHandler } from './../utils/handlers'
+import { wrapRequestHandler } from '../utils/handlers'
 import { Router } from 'express'
 import {
   changePasswordController,
@@ -17,7 +17,7 @@ import {
   unfollowController,
   updateMeController,
   verifyForgotPasswordController
-} from '~/controllers/users.controllers'
+} from '~/controllers/user.controllers'
 import { filterMiddleware } from '~/middlewares/common.middlewares'
 import {
   accessTokenValidator,
@@ -35,7 +35,7 @@ import {
   verifyForgotPasswordValidator
 } from '~/middlewares/users.middlewares'
 import { UpdateMeReqBody } from '~/models/requests/User.requests'
-const userRouter = Router()
+const userRouters = Router()
 
 /**
  * Description: Login system
@@ -43,7 +43,7 @@ const userRouter = Router()
  * Path : /login
  * Body :  {email : string, password : string}
  */
-userRouter.post('/login', loginValidator, wrapRequestHandler(loginController))
+userRouters.post('/login', loginValidator, wrapRequestHandler(loginController))
 
 /**
  * Description: Login with google credentials
@@ -51,7 +51,7 @@ userRouter.post('/login', loginValidator, wrapRequestHandler(loginController))
  * Method: GET
  *
  */
-userRouter.get('/oauth/google', wrapRequestHandler(oauthController))
+userRouters.get('/oauth/google', wrapRequestHandler(oauthController))
 
 /**
  * Description: Register a new user
@@ -59,7 +59,7 @@ userRouter.get('/oauth/google', wrapRequestHandler(oauthController))
  * Path : /register
  * Body :  {name: string, email: string, password: string, confirm_password: string, date_of_birth: ISO8261}
  */
-userRouter.post('/register', registerValidator, wrapRequestHandler(registerController))
+userRouters.post('/register', registerValidator, wrapRequestHandler(registerController))
 
 /**
  * Description: Logout user
@@ -68,7 +68,7 @@ userRouter.post('/register', registerValidator, wrapRequestHandler(registerContr
  * Headers : Brear Authorization
  * Body :  {name: string, email: string, password: string, confirm_password: string, date_of_birth: ISO8261}
  */
-userRouter.post('/logout', accessTokenValidator, refreshTokenValidator, wrapRequestHandler(logoutController))
+userRouters.post('/logout', accessTokenValidator, refreshTokenValidator, wrapRequestHandler(logoutController))
 
 /**
  * Description: refresh token
@@ -76,7 +76,7 @@ userRouter.post('/logout', accessTokenValidator, refreshTokenValidator, wrapRequ
  * Path : //refresh-token
  * Body :  {refresh_token : string}
  */
-userRouter.post('/refresh-token', refreshTokenValidator, wrapRequestHandler(refreshTokenController))
+userRouters.post('/refresh-token', refreshTokenValidator, wrapRequestHandler(refreshTokenController))
 
 /**
  * Description: Verify email when user client click on link in email
@@ -84,7 +84,7 @@ userRouter.post('/refresh-token', refreshTokenValidator, wrapRequestHandler(refr
  * Path : /verify-email
  * Body : email_verify_token
  */
-userRouter.post('/verify-email', emailVerifyTokenValidator, wrapRequestHandler(emailVerifyTokenController))
+userRouters.post('/verify-email', emailVerifyTokenValidator, wrapRequestHandler(emailVerifyTokenController))
 
 /**
  * Description. Resend email when user client click on the link in email
@@ -93,7 +93,7 @@ userRouter.post('/verify-email', emailVerifyTokenValidator, wrapRequestHandler(e
  * Header: { Authorization: Bearer <access_token> }
  * Body: {}
  */
-userRouter.post('/resend-verify-email', accessTokenValidator, wrapRequestHandler(resendVerifyEmailController))
+userRouters.post('/resend-verify-email', accessTokenValidator, wrapRequestHandler(resendVerifyEmailController))
 
 /**
  * Description.  submit email to reset password, send email to user
@@ -101,7 +101,7 @@ userRouter.post('/resend-verify-email', accessTokenValidator, wrapRequestHandler
  * Method: POST
  * Body: {email: string}
  */
-userRouter.post('/forgot-password', forgotPasswordValidator, wrapRequestHandler(forgotPasswordController))
+userRouters.post('/forgot-password', forgotPasswordValidator, wrapRequestHandler(forgotPasswordController))
 
 /**
  * Description. Verify link in email to reset password
@@ -109,7 +109,7 @@ userRouter.post('/forgot-password', forgotPasswordValidator, wrapRequestHandler(
  * Method: POST
  * Body: {forgot_password_token: string}
  */
-userRouter.post(
+userRouters.post(
   '/verify-forgot-password',
   verifyForgotPasswordValidator,
   wrapRequestHandler(verifyForgotPasswordController)
@@ -121,7 +121,7 @@ userRouter.post(
  * Method: POST
  * Body: {forgot_password_token: string, password: string, confirm_password: string}
  */
-userRouter.post('/reset-password', resetPasswordValidator, wrapRequestHandler(resetPasswordController))
+userRouters.post('/reset-password', resetPasswordValidator, wrapRequestHandler(resetPasswordController))
 
 /**
  * Description: Get my profile
@@ -129,7 +129,7 @@ userRouter.post('/reset-password', resetPasswordValidator, wrapRequestHandler(re
  * Method: GET
  * Header: { Authorization: Bearer <access_token> }
  */
-userRouter.get('/me', accessTokenValidator, wrapRequestHandler(getMeController))
+userRouters.get('/me', accessTokenValidator, wrapRequestHandler(getMeController))
 
 /**
  * Description: Update my profile
@@ -138,7 +138,7 @@ userRouter.get('/me', accessTokenValidator, wrapRequestHandler(getMeController))
  * Header: { Authorization: Bearer <access_token> }
  * Body: UserSchema
  */
-userRouter.patch(
+userRouters.patch(
   '/me',
   accessTokenValidator,
   verifiedUserValidator,
@@ -161,7 +161,7 @@ userRouter.patch(
  * Path: /:username
  * Method: GET
  */
-userRouter.get('/:username', wrapRequestHandler(getProfileController))
+userRouters.get('/:username', wrapRequestHandler(getProfileController))
 
 /**
  * Description: follow someone
@@ -170,7 +170,7 @@ userRouter.get('/:username', wrapRequestHandler(getProfileController))
  * Headers : {Authorization: Bearer <access_token>}
  * Body: {followed_user_id: string}
  */
-userRouter.post(
+userRouters.post(
   '/follow',
   accessTokenValidator,
   verifiedUserValidator,
@@ -185,7 +185,7 @@ userRouter.post(
  * Headers : {Authorization: Bearer <access_token>}
  * Params: {followed_user_id: string}
  */
-userRouter.delete(
+userRouters.delete(
   '/follow/:followed_user_id',
   accessTokenValidator,
   verifiedUserValidator,
@@ -200,7 +200,7 @@ userRouter.delete(
  * Headers : {Authorization: Bearer <access_token>}
  * Body: {old_password: string,password: string,  new_password: string}
  */
-userRouter.patch(
+userRouters.patch(
   '/change-password',
   accessTokenValidator,
   verifiedUserValidator,
@@ -214,6 +214,6 @@ userRouter.patch(
  * Method: POST
  *
  */
-userRouter.post('/oauth/google', wrapRequestHandler(oauthController))
+userRouters.post('/oauth/google', wrapRequestHandler(oauthController))
 
-export default userRouter
+export default userRouters

@@ -2,12 +2,12 @@ import {
   uploadImagesController,
   uploadSignleImageController,
   uploadVideosController
-} from '~/controllers/medias.controllers'
-import { wrapRequestHandler } from './../utils/handlers'
+} from '~/controllers/media.controllers'
+import { wrapRequestHandler } from '../utils/handlers'
 import { Router } from 'express'
 import { accessTokenValidator } from '~/middlewares/users.middlewares'
 
-const mediasRouter = Router()
+const mediaRouters = Router()
 
 /**
  * Description : upload a image
@@ -15,7 +15,7 @@ const mediasRouter = Router()
  * Method: POST
  * Body : fileName
  */
-mediasRouter.post('/uploads/image', accessTokenValidator, wrapRequestHandler(uploadSignleImageController))
+mediaRouters.post('/uploads/image', accessTokenValidator, wrapRequestHandler(uploadSignleImageController))
 
 /**
  * Description : upload multiple image
@@ -23,7 +23,7 @@ mediasRouter.post('/uploads/image', accessTokenValidator, wrapRequestHandler(upl
  * Method: POST
  * Body : fileName
  */
-mediasRouter.post('/uploads/images', accessTokenValidator, wrapRequestHandler(uploadImagesController))
+mediaRouters.post('/uploads/images', accessTokenValidator, wrapRequestHandler(uploadImagesController))
 
 /**
  * Description : upload videos
@@ -31,6 +31,6 @@ mediasRouter.post('/uploads/images', accessTokenValidator, wrapRequestHandler(up
  * Method: POST
  * Body : video
  */
-mediasRouter.post('/uploads/videos', accessTokenValidator, wrapRequestHandler(uploadVideosController))
+mediaRouters.post('/uploads/videos', accessTokenValidator, wrapRequestHandler(uploadVideosController))
 
-export default mediasRouter
+export default mediaRouters

@@ -77,3 +77,7 @@ export const MEDIA_MESSAGES = {
   UPLOAD_VIDEO_MULTIPLE_SUCCESS: 'Uploading video multiple success',
   RANGE_IS_REQUIRE: 'Range is required'
 } as const
+
+export const TWEET_MESSAGES = {
+  CREATE_TWEET_SUCCESS: 'create tweet successfully'
+} as const
