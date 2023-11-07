@@ -80,6 +80,7 @@ export const MEDIA_MESSAGES = {
 
 export const TWEET_MESSAGES = {
   CREATE_TWEET_SUCCESS: 'create tweet successfully',
+  TWEET_NOT_FOUND: 'tweet not found',
   INVALID_TYPE: 'invalid type',
   INVALID_AUDIENCE: 'invalid audience',
   PARENT_ID_MUST_BE_A_VALID_TWEET_ID: 'parent_id must be a valid tweet id',
@@ -92,5 +93,12 @@ export const TWEET_MESSAGES = {
   MENTIONS_MUST_BE_AN_ARRAY_OF_STRING_AND_MUST_BE_OBJECT_ID:
     'mentions must be an array of string and value must be an object id',
   MENTIONS_MUST_BE_AN_ARRAY: 'mentions must be an array',
-  MEDIAS_MUST_BE_AN_ARRAY_OF_MEDIA_OBJECT: 'media object must be an array of media object'
+  MEDIAS_MUST_BE_AN_ARRAY_OF_MEDIA_OBJECT: 'media object must be an array of media object',
+  TWEET_ID_IS_REQUIRED: 'tweet is required',
+  TWEET_ID_MALFORMED: 'tweet is malformed'
+} as const
+
+export const BOOKMARK_MESSAGES = {
+  BOOKMARK_SUCCESS: 'Bookmark successfully',
+  UNBOOKMARK_SUCCESS: 'unbookmark successfully'
 } as const

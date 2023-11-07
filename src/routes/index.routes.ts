@@ -1,3 +1,4 @@
+import bookmarkRouters from './bookmark.routes'
 import mediaRouters from './media.routes'
 import staticRouters from './static.routes'
 import tweetRouters from './tweet.routes'
@@ -8,5 +9,6 @@ export const initRoutes = (app: Express) => {
   app.use('/api/users', userRouters)
   app.use('/api/medias', mediaRouters)
   app.use('/api/tweets', tweetRouters)
+  app.use('/api/bookmarks', bookmarkRouters)
   app.use('/static', staticRouters)
 }

@@ -5,6 +5,8 @@ import RefreshToken from '~/models/schemas/RefreshToken.schema'
 import Follower from '~/models/schemas/Follower.schema'
 import Tweet from '~/models/schemas/Tweet.schema'
 import HashTag from '~/models/schemas/HashTag.schema'
+import Bookmark from '~/models/schemas/Bookmark.schema'
+import Like from '~/models/schemas/Like.schema'
 config()
 const uri = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@twitter.ven5idz.mongodb.net/?retryWrites=true&w=majority`
 
@@ -78,6 +80,14 @@ class DatabaseService {
 
   get hashTags(): Collection<HashTag> {
     return this.db.collection(process.env.DB_HASHTAG_COLLECTION as string)
+  }
+
+  get bookmarks(): Collection<Bookmark> {
+    return this.db.collection(process.env.DB_BOOKMARK_COLLECTION as string)
+  }
+
+  get likes(): Collection<Like> {
+    return this.db.collection(process.env.DB_LIKE_COLLECTION as string)
   }
 }
 

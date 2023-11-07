@@ -34,7 +34,7 @@ export default class Tweet {
   updated_at?: Date
   constructor(tweet: TweetContructor) {
     const date = new Date()
-    this._id = tweet._id
+    this._id = tweet._id || new ObjectId()
     this.user_id = tweet.user_id
     this.type = tweet.type
     this.audience = tweet.audience
