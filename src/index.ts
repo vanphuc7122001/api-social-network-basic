@@ -25,6 +25,7 @@ databaseService.connect().then(() => {
   databaseService.indexUsers()
   databaseService.indexFollowers()
   databaseService.indexRefreshTokens()
+  databaseService.indexTweets()
 })
 
 app.use(defaultErrorHandler)

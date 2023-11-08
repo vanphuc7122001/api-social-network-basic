@@ -55,10 +55,16 @@ class DatabaseService {
     }
   }
 
-  indexFollowers() {
-    const exists = this.followers.indexExists(['user_id_1', 'followed_user_id_1'])
+  async indexFollowers() {
+    const exists = await this.followers.indexExists(['user_id_1', 'followed_user_id_1'])
     if (!exists) {
       this.followers.createIndex({ user_id: 1, followed_user_id: 1 })
+    }
+  }
+  async indexTweets() {
+    const exists = await this.tweets.indexExists('content_text')
+    if (!exists) {
+      this.tweets.createIndex({ content: 'text' })
     }
   }
 

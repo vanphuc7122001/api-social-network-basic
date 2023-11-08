@@ -298,7 +298,7 @@ class TweetService {
                     },
                     {
                       'user.twitter_circle': {
-                        in: [user_id_object]
+                        $in: [user_id_object]
                       }
                     }
                   ]
@@ -460,7 +460,7 @@ class TweetService {
                     },
                     {
                       'user.twitter_circle': {
-                        in: [user_id_object]
+                        $in: [user_id_object]
                       }
                     }
                   ]
@@ -497,7 +497,7 @@ class TweetService {
     })
     return {
       tweets,
-      total: total[0].total
+      total: total[0]?.total || 0
     }
   }
 }
