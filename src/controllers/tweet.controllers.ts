@@ -4,6 +4,7 @@ import { TWEET_MESSAGES } from '~/constants/messages'
 import { CreateTweetReqBody, GetTweetParams } from '~/models/requests/Tweet.requests'
 import { TokenPayload } from '~/models/requests/User.requests'
 import tweetService from '~/services/tweet.service'
+import Tweet from '~/models/schemas/Tweet.schema'
 
 export const createTweetController = async (
   req: Request<ParamsDictionary, any, CreateTweetReqBody>,
@@ -20,7 +21,14 @@ export const createTweetController = async (
 }
 
 export const getTweetController = async (req: Request<GetTweetParams>, res: Response, next: NextFunction) => {
+  const result = await tweetService.increaseView(req.params.tweet_id, req.decoded_authorization?.user_id)
+  const tweet = {
+    ...req.tweet,
+    guest_views: result.guest_views,
+    user_views: result.user_views
+  }
   res.json({
-    message: TWEET_MESSAGES.GET_TWEET_SUCESS
+    message: TWEET_MESSAGES.GET_TWEET_SUCESS,
+    result: tweet
   })
 }
