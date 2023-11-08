@@ -1,4 +1,4 @@
-import { MediaType, MediaTypeQuery, TweetAudience, TweetType } from '~/constants/enums'
+import { MediaType, MediaTypeQuery, PeopleFollow, TweetAudience, TweetType } from '~/constants/enums'
 import databaseService from './database.service'
 import { ObjectId } from 'mongodb'
 
@@ -16,7 +16,7 @@ class SearchService {
     content: string
     user_id: string
     media_type?: MediaTypeQuery
-    people_follow?: string
+    people_follow?: PeopleFollow
   }) {
     const user_object_id = new ObjectId(user_id)
 
@@ -26,7 +26,7 @@ class SearchService {
       }
     }
 
-    if (people_follow && people_follow === '1') {
+    if (people_follow && people_follow === PeopleFollow.Following) {
       const followers_user_id = await databaseService.followers
         .find(
           {
