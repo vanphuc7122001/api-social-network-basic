@@ -8,20 +8,45 @@ class SearchService {
     page,
     content,
     user_id,
-    media_type
+    media_type,
+    people_follow
   }: {
     limit: number
     page: number
     content: string
     user_id: string
-    media_type: MediaTypeQuery
+    media_type?: MediaTypeQuery
+    people_follow?: string
   }) {
+    const user_object_id = new ObjectId(user_id)
+
     const $match: any = {
       $text: {
         $search: content
       }
     }
 
+    if (people_follow && people_follow === '1') {
+      const followers_user_id = await databaseService.followers
+        .find(
+          {
+            user_id: user_object_id
+          },
+          {
+            projection: {
+              _id: 0,
+              followed_user_id: 1
+            }
+          }
+        )
+        .toArray()
+
+      const ids = followers_user_id.map((item) => item.followed_user_id)
+      ids.push(user_object_id)
+      $match['user_id'] = {
+        $in: ids
+      }
+    }
     if (media_type) {
       if (media_type === MediaTypeQuery.Image) {
         $match['medias.type'] = MediaType.Image
@@ -32,7 +57,6 @@ class SearchService {
       }
     }
 
-    const user_object_id = new ObjectId(user_id)
     const [tweets, total] = await Promise.all([
       databaseService.tweets
         .aggregate([
