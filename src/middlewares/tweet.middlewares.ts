@@ -1,12 +1,16 @@
+import { NextFunction, Request, Response } from 'express'
 import { checkSchema } from 'express-validator'
 import { isEmpty } from 'lodash'
 import { ObjectId } from 'mongodb'
-import { MediaType, TweetAudience, TweetType } from '~/constants/enums'
+import { MediaType, TweetAudience, TweetType, UserVerifyStatus } from '~/constants/enums'
 import HTTP_STATUS from '~/constants/httpStatus'
-import { TWEET_MESSAGES } from '~/constants/messages'
+import { TWEET_MESSAGES, USERS_MESSAGES } from '~/constants/messages'
 import { ErrorWithStatus } from '~/models/Errors'
+import { TokenPayload } from '~/models/requests/User.requests'
+import Tweet from '~/models/schemas/Tweet.schema'
 import databaseService from '~/services/database.service'
 import { numberEnumToArray } from '~/utils/commons'
+import { wrapRequestHandler } from '~/utils/handlers'
 import { validate } from '~/utils/validation'
 
 const tweetType = numberEnumToArray(TweetType)
@@ -138,7 +142,7 @@ export const tweetIdValidator = validate(
     {
       tweet_id: {
         custom: {
-          options: async (value) => {
+          options: async (value, { req }) => {
             if (!value) {
               throw new ErrorWithStatus({
                 message: TWEET_MESSAGES.TWEET_ID_IS_REQUIRED,
@@ -161,6 +165,8 @@ export const tweetIdValidator = validate(
               })
             }
 
+            req.tweet = tweet
+
             return true
           }
         }
@@ -169,3 +175,31 @@ export const tweetIdValidator = validate(
     ['body', 'params']
   )
 )
+
+export const audienceValidator = wrapRequestHandler(async (req: Request, res: Response, next: NextFunction) => {
+  const tweet = req.tweet as Tweet
+  if (tweet.audience == TweetAudience.TwitterCircle) {
+    // tác giả tweet
+    const author = await databaseService.users.findOne({
+      _id: new ObjectId(tweet.user_id)
+    })
+    // kiểm tra tài khoản của tác giả có ổn hay không
+    if (!author || author.verify === UserVerifyStatus.Banned) {
+      throw new ErrorWithStatus({
+        status: HTTP_STATUS.NOT_FOUND,
+        message: USERS_MESSAGES.USER_NOT_FOUND
+      })
+    }
+    // kiểm tra người xem tweet này có trong tweet circle hay không
+    const { user_id } = req.decoded_authorization as TokenPayload
+    const isInTweetCircles = author.twitter_circle.some((user_circle_id) => user_circle_id.equals(user_id))
+    // nếu bạn không phải là tác giả và không nằm trong tweet circle
+    if (!author._id.equals(user_id) && !isInTweetCircles) {
+      throw new ErrorWithStatus({
+        status: HTTP_STATUS.FORBIDDEN,
+        message: TWEET_MESSAGES.TWEET_IS_NOT_PUBLIC
+      })
+    }
+  }
+  next()
+})
