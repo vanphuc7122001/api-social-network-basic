@@ -15,3 +15,9 @@ export interface CreateTweetReqBody {
 export interface GetTweetParams extends ParamsDictionary {
   tweet_id: string
 }
+
+export interface GetTweetReqQueryBody {
+  page: string
+  limit: string
+  tweet_type: string
+}

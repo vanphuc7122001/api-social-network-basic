@@ -97,7 +97,8 @@ export const TWEET_MESSAGES = {
   TWEET_ID_IS_REQUIRED: 'tweet is required',
   TWEET_ID_MALFORMED: 'tweet is malformed',
   GET_TWEET_SUCESS: 'get tweet success',
-  TWEET_IS_NOT_PUBLIC: 'tweet is not public'
+  TWEET_IS_NOT_PUBLIC: 'tweet is not public',
+  GET_TWEET_CHILDREN_SUCESS: 'get tweet children succesfully'
 } as const
 
 export const BOOKMARK_MESSAGES = {
