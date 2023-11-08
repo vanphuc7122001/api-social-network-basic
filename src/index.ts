@@ -5,7 +5,6 @@ import { defaultErrorHandler } from './middlewares/error.middlewares'
 import databaseService from './services/database.service'
 import { initFolder } from './utils/files'
 import { UPLOAD_VIDEOS_DIR } from './constants/dir'
-import './utils/fake'
 const app = express()
 
 const port = 4000

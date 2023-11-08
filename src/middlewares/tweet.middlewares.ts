@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
-import { checkSchema } from 'express-validator'
+import { ParamSchema, checkSchema } from 'express-validator'
 import { isEmpty } from 'lodash'
 import { ObjectId } from 'mongodb'
 import { MediaType, TweetAudience, TweetType, UserVerifyStatus } from '~/constants/enums'
@@ -16,6 +16,32 @@ import { validate } from '~/utils/validation'
 const tweetType = numberEnumToArray(TweetType)
 const tweetAudience = numberEnumToArray(TweetAudience)
 const mediaTypes = numberEnumToArray(MediaType)
+
+const limitParamShema: ParamSchema = {
+  isNumeric: true,
+  custom: {
+    options: async (value, { req }) => {
+      const num = Number(value)
+      if (num > 100 || num < 1) {
+        throw new Error('1 <= limit <= 100')
+      }
+      return true
+    }
+  }
+}
+
+const pageParamSchema: ParamSchema = {
+  isNumeric: true,
+  custom: {
+    options: async (value, { req }) => {
+      const num = Number(value)
+      if (num < 1) {
+        throw new Error('page >= 1')
+      }
+      return true
+    }
+  }
+}
 
 export const createTweetValidator = validate(
   checkSchema(
@@ -323,30 +349,18 @@ export const getTweetChildrenValidator = validate(
           errorMessage: TWEET_MESSAGES.INVALID_TYPE
         }
       },
-      limit: {
-        isNumeric: true,
-        custom: {
-          options: async (value, { req }) => {
-            const num = Number(value)
-            if (num > 100 || num < 1) {
-              throw new Error('1 <= limit <= 100')
-            }
-            return true
-          }
-        }
-      },
-      page: {
-        isNumeric: true,
-        custom: {
-          options: async (value, { req }) => {
-            const num = Number(value)
-            if (num < 1) {
-              throw new Error('page >= 1')
-            }
-            return true
-          }
-        }
-      }
+      limit: limitParamShema,
+      page: pageParamSchema
+    },
+    ['query']
+  )
+)
+
+export const paginationValidator = validate(
+  checkSchema(
+    {
+      limit: limitParamShema,
+      page: pageParamSchema
     },
     ['query']
   )
