@@ -95,7 +95,8 @@ export const TWEET_MESSAGES = {
   MENTIONS_MUST_BE_AN_ARRAY: 'mentions must be an array',
   MEDIAS_MUST_BE_AN_ARRAY_OF_MEDIA_OBJECT: 'media object must be an array of media object',
   TWEET_ID_IS_REQUIRED: 'tweet is required',
-  TWEET_ID_MALFORMED: 'tweet is malformed'
+  TWEET_ID_MALFORMED: 'tweet is malformed',
+  GET_TWEET_SUCESS: 'get tweet success'
 } as const
 
 export const BOOKMARK_MESSAGES = {

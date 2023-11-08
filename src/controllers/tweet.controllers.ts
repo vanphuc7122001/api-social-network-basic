@@ -1,7 +1,7 @@
 import { ParamsDictionary } from 'express-serve-static-core'
 import { NextFunction, Request, Response } from 'express'
 import { TWEET_MESSAGES } from '~/constants/messages'
-import { CreateTweetReqBody } from '~/models/requests/Tweet.requests'
+import { CreateTweetReqBody, GetTweetParams } from '~/models/requests/Tweet.requests'
 import { TokenPayload } from '~/models/requests/User.requests'
 import tweetService from '~/services/tweet.service'
 
@@ -16,5 +16,11 @@ export const createTweetController = async (
   res.json({
     message: TWEET_MESSAGES.CREATE_TWEET_SUCCESS,
     result
+  })
+}
+
+export const getTweetController = async (req: Request<GetTweetParams>, res: Response, next: NextFunction) => {
+  res.json({
+    message: TWEET_MESSAGES.GET_TWEET_SUCESS
   })
 }
