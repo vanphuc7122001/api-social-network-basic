@@ -12,7 +12,13 @@ export const searchController = async (
   const limit = Number(req.query.limit)
   const page = Number(req.query.page)
   const user_id = req.decoded_authorization?.user_id as string
-  const { total, tweets } = await searchService.search({ limit, page, content: req.query.content, user_id })
+  const { total, tweets } = await searchService.search({
+    limit,
+    page,
+    content: req.query.content,
+    user_id,
+    media_type: req.query.media_type
+  })
   return res.json({
     message: SEARCH_MESSAGES.SEARCH_SUCCESS,
     result: {
