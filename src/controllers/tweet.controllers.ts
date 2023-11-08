@@ -38,11 +38,13 @@ export const getTweetChildrenController = async (req: Request<GetTweetParams>, r
   const tweet_type = Number(req.query.tweet_type as string) as TweetType
   const limit = Number(req.query.limit as string)
   const page = Number(req.query.page as string)
+  const user_id = req.decoded_authorization?.user_id
   const { total, tweets } = await tweetService.getTweetChildren({
     tweet_id: req.params.tweet_id,
     limit,
     page,
-    tweet_type
+    tweet_type,
+    user_id
   })
   res.json({
     message: TWEET_MESSAGES.GET_TWEET_CHILDREN_SUCESS,
