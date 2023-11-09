@@ -12,7 +12,7 @@ export const signToken = ({
   privateKey: string
   options?: SignOptions
 }) => {
-  return new Promise((resolve, reject) => {
+  return new Promise<string>((resolve, reject) => {
     jwt.sign(payload, privateKey, options, (error, token) => {
       if (error) {
         throw reject(error)

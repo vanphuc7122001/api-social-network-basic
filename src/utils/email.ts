@@ -1,5 +1,7 @@
 import { SendEmailCommand, SESClient } from '@aws-sdk/client-ses'
 import { config } from 'dotenv'
+import path from 'path'
+import fs from 'fs'
 
 config()
 // Create SES service object.
@@ -67,5 +69,51 @@ export const sendVerifyEmail = async ({
     subject
   })
 
-  return await sesClient.send(sendEmailCommand)
+  return sesClient.send(sendEmailCommand)
+}
+
+export const verifyEmailTemplate = fs.readFileSync(path.resolve('src', 'templates', 'verify-email.html'), 'utf-8')
+
+export const sendVerifyRegisterEmail = ({
+  toAddress,
+  subject,
+  email_verify_token,
+  template = verifyEmailTemplate
+}: {
+  toAddress: string
+  subject: string
+  email_verify_token: string
+  template?: string
+}) => {
+  return sendVerifyEmail({
+    toAddress,
+    subject,
+    body: template
+      .replace('{{title}}', 'Please verify your email')
+      .replace('{{content}}', 'Click the button below to verify your email')
+      .replace('{{titleLink}}', 'Verify')
+      .replace('{{link}}', `${process.env.CLIENT_URL}/verify-email?token=${email_verify_token}`)
+  })
+}
+
+export const sendForgotPasswrodEmail = ({
+  toAddress,
+  subject,
+  forgot_password_token,
+  template = verifyEmailTemplate
+}: {
+  toAddress: string
+  subject: string
+  forgot_password_token: string
+  template?: string
+}) => {
+  return sendVerifyEmail({
+    toAddress,
+    subject,
+    body: template
+      .replace('{{title}}', 'You are receiving this email because you requested to reset your password')
+      .replace('{{content}}', 'Click the button below to reset your password')
+      .replace('{{titleLink}}', 'Reset password')
+      .replace('{{link}}', `${process.env.CLIENT_URL}/reset-password?token=${forgot_password_token}`)
+  })
 }

@@ -246,11 +246,6 @@ export const registerValidator = validate(
                 status: HTTP_STATUS.INTERNAL_SERVER_ERROR
               })
             }
-
-            if (!USER_EMAIL_REGEX.test(value)) {
-              throw new ErrorWithStatus({ message: USERS_MESSAGES.EMAIL_IS_INVALID, status: HTTP_STATUS.BAD_REQUEST })
-            }
-
             const isExistEmail = await databaseService.users.findOne({ email: value })
             if (isExistEmail) {
               throw new ErrorWithStatus({

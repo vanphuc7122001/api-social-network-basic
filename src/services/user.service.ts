@@ -12,7 +12,7 @@ import { USERS_MESSAGES } from '~/constants/messages'
 import HTTP_STATUS from '~/constants/httpStatus'
 import Follower from '~/models/schemas/Follower.schema'
 import axios from 'axios'
-import { sendVerifyEmail } from '~/utils/email'
+import { sendForgotPasswrodEmail, sendVerifyRegisterEmail } from '~/utils/email'
 config()
 
 interface PayloadToken {
@@ -104,16 +104,23 @@ class UserService {
     const user_id = new ObjectId().toString()
 
     const email_verify_token = await this.signEmailVerifyToken({ user_id, verify: UserVerifyStatus.Unverified })
-    await databaseService.users.insertOne(
-      new User({
-        ...payload,
-        _id: new ObjectId(user_id),
-        username: `user${user_id}`,
-        email_verify_token: email_verify_token as string,
-        date_of_birth: new Date(payload.date_of_birth),
-        password: hashPassword(payload.password)
+    await Promise.all([
+      databaseService.users.insertOne(
+        new User({
+          ...payload,
+          _id: new ObjectId(user_id),
+          username: `user${user_id}`,
+          email_verify_token: email_verify_token as string,
+          date_of_birth: new Date(payload.date_of_birth),
+          password: hashPassword(payload.password)
+        })
+      ),
+      sendVerifyRegisterEmail({
+        email_verify_token,
+        toAddress: payload.email,
+        subject: 'Verify email when register'
       })
-    )
+    ])
 
     /**
      * Flow send email when register successful
@@ -123,13 +130,6 @@ class UserService {
      * 4. Server verify email_verify_token
      * 5. Client recieve access token and refresh token
      */
-
-    await sendVerifyEmail({
-      toAddress: payload.email,
-      subject: 'Verify your email',
-      body: `<h1>Verify your email</h1>
-      <p>Click <a href="${process.env.CLIENT_URL}/verify-email?token=${email_verify_token}">here</a> to verify your email</p>`
-    })
 
     const [access_token, refresh_token] = await this.signAccessAndRefreshToken({
       user_id,
@@ -283,36 +283,40 @@ class UserService {
     }
   }
 
-  async resendVerifyEmail(user_id: string) {
+  async resendVerifyEmail({ user_id, email }: { user_id: string; email: string }) {
     const email_verify_token = await this.signEmailVerifyToken({ user_id, verify: UserVerifyStatus.Unverified })
-    console.log('email verify token ', email_verify_token)
-    await databaseService.users.updateOne({ _id: new ObjectId(user_id) }, [
-      {
-        $set: {
-          email_verify_token: email_verify_token as string,
-          update_at: '$$NOW'
+    await Promise.all([
+      databaseService.users.updateOne({ _id: new ObjectId(user_id) }, [
+        {
+          $set: {
+            email_verify_token: email_verify_token as string,
+            update_at: '$$NOW'
+          }
         }
-      }
+      ]),
+      sendVerifyRegisterEmail({ email_verify_token, toAddress: email, subject: 'Resend email when register' })
     ])
   }
 
-  async forgotPassword({ user_id, verify }: PayloadToken) {
-    const forgot_password_token = (await this.signForgotPasswordToken({
+  async forgotPassword({ user_id, verify, email }: PayloadToken & { email: string }) {
+    const forgot_password_token = await this.signForgotPasswordToken({
       user_id: user_id.toString(),
       verify
-    })) as string
-    console.log('forgot password token', forgot_password_token)
-    await databaseService.users.updateOne(
-      { _id: new ObjectId(user_id) },
-      {
-        $set: {
-          forgot_password_token
-        },
-        $currentDate: {
-          update_at: true
+    })
+    await Promise.all([
+      databaseService.users.updateOne(
+        { _id: new ObjectId(user_id) },
+        {
+          $set: {
+            forgot_password_token
+          },
+          $currentDate: {
+            update_at: true
+          }
         }
-      }
-    )
+      ),
+      sendForgotPasswrodEmail({ forgot_password_token, subject: 'Verify Forgot Password', toAddress: email })
+    ])
   }
 
   async resetPassword(user_id: string, password: string) {
