@@ -106,10 +106,10 @@ userRouters.post('/forgot-password', forgotPasswordValidator, wrapRequestHandler
 /**
  * Description. Verify link in email to reset password
  * Path: /verify-forgot-password
- * Method: POST
+ * Method: GET
  * Body: {forgot_password_token: string}
  */
-userRouters.post(
+userRouters.get(
   '/verify-forgot-password',
   verifyForgotPasswordValidator,
   wrapRequestHandler(verifyForgotPasswordController)

@@ -149,13 +149,12 @@ export const forgotPasswordController = async (
 }
 
 export const verifyForgotPasswordController = (
-  req: Request<any, any, VerifyForgotPassReq>,
+  req: Request<any, any, VerifyForgotPassReq, { forgot_password_token: string }>,
   res: Response,
   next: NextFunction
 ) => {
-  return res.json({
-    message: USERS_MESSAGES.VERIFY_FORGOT_PASSWORD_SUCCESS
-  })
+  const { forgot_password_token } = req.query
+  return res.redirect(`${process.env.CLIENT_URL}/reset-password?token=${forgot_password_token}`)
 }
 
 export const resetPasswordController = async (

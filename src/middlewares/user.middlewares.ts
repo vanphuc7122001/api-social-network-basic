@@ -419,7 +419,7 @@ export const verifyForgotPasswordValidator = validate(
     {
       forgot_password_token: forgotPasswordTokenSchema
     },
-    ['body']
+    ['query']
   )
 )
 

@@ -1,26 +1,33 @@
 import { config } from 'dotenv'
 import { Request } from 'express'
-import fs from 'fs'
+import fsPromise from 'fs/promises'
 import path from 'path'
 import sharp from 'sharp'
-import { isProduction } from '~/constants/config'
+import mime from 'mime'
 import { UPLOAD_IMAGES_DIR } from '~/constants/dir'
 import { MediaType } from '~/constants/enums'
 import { Media } from '~/models/Other'
 import { getNameFromFullName, handleUploadImage, handleUploadSignleImage, handleUploadVideos } from '~/utils/files'
+import { uploadFileToS3 } from '~/utils/s3'
+import { CompleteMultipartUploadCommandOutput } from '@aws-sdk/client-s3'
 config()
 
 class MediaService {
   async handleUploadSignleImage(req: Request) {
     const file = await handleUploadSignleImage(req)
     const newName = getNameFromFullName(file.newFilename)
-    const newPath = path.resolve(UPLOAD_IMAGES_DIR, `${newName}.jpg`)
+    const newFullFileName = `${newName}.jpg`
+    const newPath = path.resolve(UPLOAD_IMAGES_DIR, newFullFileName)
+    console.log(newPath)
     await sharp(file.filepath).jpeg().toFile(newPath)
-    fs.unlinkSync(file.filepath)
+    const s3Result = await uploadFileToS3({
+      filename: newFullFileName,
+      filepath: newPath,
+      contentType: mime.getType(newPath) as string
+    })
+    // await Promise.all([fsPromise.unlink(file.filepath), fsPromise.unlink(newPath)])
     return {
-      url: isProduction
-        ? `${process.env.HOST}static/images/${newName}.jpg`
-        : `http://localhost:${process.env.PORT}/static/images/${newName}.jpg`,
+      url: (s3Result as CompleteMultipartUploadCommandOutput).Location as string,
       type: MediaType.Image
     }
   }
@@ -30,13 +37,17 @@ class MediaService {
     const result: Media[] = await Promise.all(
       files.map(async (file) => {
         const newName = getNameFromFullName(file.newFilename)
-        const newPath = path.resolve(UPLOAD_IMAGES_DIR, `${newName}.jpg`)
+        const newFullFileName = `${newName}.jpg`
+        const newPath = path.resolve(UPLOAD_IMAGES_DIR, newFullFileName)
         await sharp(file.filepath).jpeg().toFile(newPath)
-        fs.unlinkSync(file.filepath)
+        const s3Result = await uploadFileToS3({
+          filename: 'images/' + newFullFileName,
+          filepath: newPath,
+          contentType: mime.getType(newPath) as string
+        })
+        await Promise.all([fsPromise.unlink(file.filepath), fsPromise.unlink(newPath)])
         return {
-          url: isProduction
-            ? `${process.env.HOST}static/images/${newName}.jpg`
-            : `http://localhost:${process.env.PORT}/static/images/${newName}.jpg`,
+          url: (s3Result as CompleteMultipartUploadCommandOutput).Location as string,
           type: MediaType.Image
         }
       })
@@ -46,13 +57,17 @@ class MediaService {
   }
 
   async handleUploadVideo(req: Request) {
-    const videos = await handleUploadVideos(req)
+    const files = await handleUploadVideos(req)
     const result: Media[] = await Promise.all(
-      videos.map(async (video) => {
+      files.map(async (file) => {
+        const s3Result = await uploadFileToS3({
+          filename: 'videos/' + file.newFilename,
+          filepath: file.filepath,
+          contentType: mime.getType(file.filepath) as string
+        })
+        fsPromise.unlink(file.filepath)
         return {
-          url: isProduction
-            ? `${process.env.HOST}static/videos/${video.newFilename}`
-            : `http://localhost:${process.env.PORT}/static/videos/${video.newFilename}`,
+          url: (s3Result as CompleteMultipartUploadCommandOutput).Location as string,
           type: MediaType.Video
         }
       })
