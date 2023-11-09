@@ -12,6 +12,7 @@ import { USERS_MESSAGES } from '~/constants/messages'
 import HTTP_STATUS from '~/constants/httpStatus'
 import Follower from '~/models/schemas/Follower.schema'
 import axios from 'axios'
+import { sendVerifyEmail } from '~/utils/email'
 config()
 
 interface PayloadToken {
@@ -114,7 +115,21 @@ class UserService {
       })
     )
 
-    console.log('email verify token', email_verify_token)
+    /**
+     * Flow send email when register successful
+     * 1. When register successful server send email attachment link to email of user
+     * 2. User click link in email
+     * 3. Client send request to server with email_verify_token
+     * 4. Server verify email_verify_token
+     * 5. Client recieve access token and refresh token
+     */
+
+    await sendVerifyEmail({
+      toAddress: payload.email,
+      subject: 'Verify your email',
+      body: `<h1>Verify your email</h1>
+      <p>Click <a href="${process.env.CLIENT_URL}/verify-email?token=${email_verify_token}">here</a> to verify your email</p>`
+    })
 
     const [access_token, refresh_token] = await this.signAccessAndRefreshToken({
       user_id,
