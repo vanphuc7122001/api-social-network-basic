@@ -1,4 +1,6 @@
 export const USERS_MESSAGES = {
+  USER_ID_IS_REQUIRED: 'USER_ID_IS_REQUIREd',
+  USER_ID_MALFORMED: 'USER_ID is not formatted',
   VALIDATION_ERROR: 'Validation error',
   NAME_IS_REQUIRED: 'Name is required',
   NAME_MUST_BE_A_STRING: 'Name must be a string',
@@ -114,4 +116,15 @@ export const LIKE_MESSAGES = {
 
 export const SEARCH_MESSAGES = {
   SEARCH_SUCCESS: 'Search successfully'
+} as const
+
+export const FRIEND_MESSAGES = {
+  FRIEND_SUCESS: 'Friend successfully',
+  GET_FRIENDS_SUCCESS: 'Get friends successfully'
+}
+
+export const CONVERSATION_MESSAGES = {
+  RECEIVER_ID_IS_REQUIRED: 'Receiver ID is required',
+  RECEIVER_ID_IS_MALFORMED: 'Receiver ID is malformed',
+  GET_CONVERSATIONS_SUCCESS: 'Get conversations succesfully'
 } as const

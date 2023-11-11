@@ -5,7 +5,9 @@ import { defaultErrorHandler } from './middlewares/error.middlewares'
 import databaseService from './services/database.service'
 import { initFolder } from './utils/files'
 import { UPLOAD_VIDEOS_DIR } from './constants/dir'
-import './utils/s3'
+import { createServer } from 'http'
+import { initialSocket } from './utils/socket'
+
 const app = express()
 
 const port = 4000
@@ -31,6 +33,9 @@ databaseService.connect().then(() => {
 
 app.use(defaultErrorHandler)
 
-app.listen(port, () => {
+const httpServer = createServer(app)
+
+initialSocket(httpServer)
+httpServer.listen(port, () => {
   console.log(`Server listening on ${port}`)
 })

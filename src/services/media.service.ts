@@ -18,14 +18,13 @@ class MediaService {
     const newName = getNameFromFullName(file.newFilename)
     const newFullFileName = `${newName}.jpg`
     const newPath = path.resolve(UPLOAD_IMAGES_DIR, newFullFileName)
-    console.log(newPath)
     await sharp(file.filepath).jpeg().toFile(newPath)
     const s3Result = await uploadFileToS3({
       filename: newFullFileName,
       filepath: newPath,
       contentType: mime.getType(newPath) as string
     })
-    // await Promise.all([fsPromise.unlink(file.filepath), fsPromise.unlink(newPath)])
+    await Promise.all([fsPromise.unlink(file.filepath), fsPromise.unlink(newPath)])
     return {
       url: (s3Result as CompleteMultipartUploadCommandOutput).Location as string,
       type: MediaType.Image

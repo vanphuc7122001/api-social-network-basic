@@ -1,4 +1,6 @@
 import bookmarkRouters from './bookmark.routes'
+import conversationRoutes from './conversation.routes'
+import friendRouters from './friend.routes'
 import likeRouters from './like.routes'
 import mediaRouters from './media.routes'
 import searchRouters from './search.routes'
@@ -14,5 +16,7 @@ export const initRoutes = (app: Express) => {
   app.use('/api/bookmarks', bookmarkRouters)
   app.use('/api/likes', likeRouters)
   app.use('/api/search', searchRouters)
+  app.use('/api/friends', friendRouters)
+  app.use('/api/conversations', conversationRoutes)
   app.use('/static', staticRouters)
 }
