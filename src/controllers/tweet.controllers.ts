@@ -3,9 +3,8 @@ import { NextFunction, Request, Response } from 'express'
 import { TWEET_MESSAGES } from '~/constants/messages'
 import { CreateTweetReqBody, GetTweetParams, Pagination } from '~/models/requests/Tweet.requests'
 import { TokenPayload } from '~/models/requests/User.requests'
-import tweetService from '~/services/tweet.service'
-import Tweet from '~/models/schemas/Tweet.schema'
 import { TweetType } from '~/constants/enums'
+import tweetService from '~/services/tweet.service'
 
 export const createTweetController = async (
   req: Request<ParamsDictionary, any, CreateTweetReqBody>,

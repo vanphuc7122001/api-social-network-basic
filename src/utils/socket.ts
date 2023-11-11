@@ -2,9 +2,9 @@ import { Server } from 'socket.io'
 import { verifyAccessToken } from './commons'
 import { TokenPayload } from '~/models/requests/User.requests'
 import { ObjectId } from 'mongodb'
+import { Server as HttpServer } from 'http'
 import databaseService from '~/services/database.service'
 import Conversation from '~/models/schemas/Conversations.schema'
-import { Server as HttpServer } from 'http'
 
 export const initialSocket = (httpServer: HttpServer) => {
   const io = new Server(httpServer, {

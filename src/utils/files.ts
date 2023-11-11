@@ -1,7 +1,8 @@
 import { Request } from 'express'
+
+import { UPLOAD_IMAGES_TEM_DIR, UPLOAD_VIDEOS_DIR } from '~/constants/dir'
 import formidable, { Fields, Files, File } from 'formidable'
 import fs from 'fs'
-import { UPLOAD_IMAGES_TEM_DIR, UPLOAD_VIDEOS_DIR } from '~/constants/dir'
 
 export const initFolder = () => {
   ;[UPLOAD_VIDEOS_DIR, UPLOAD_IMAGES_TEM_DIR].forEach((folder) => {

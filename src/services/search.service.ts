@@ -1,6 +1,6 @@
 import { MediaType, MediaTypeQuery, PeopleFollow, TweetAudience, TweetType } from '~/constants/enums'
-import databaseService from './database.service'
 import { ObjectId } from 'mongodb'
+import databaseService from './database.service'
 
 class SearchService {
   async search({

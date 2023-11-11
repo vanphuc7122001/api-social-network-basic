@@ -1,9 +1,9 @@
 import { checkSchema } from 'express-validator'
 import { ObjectId } from 'mongodb'
-import HTTP_STATUS from '~/constants/httpStatus'
 import { USERS_MESSAGES } from '~/constants/messages'
 import { ErrorWithStatus } from '~/models/Errors'
 import { validate } from '~/utils/validation'
+import HTTP_STATUS from '~/constants/httpStatus'
 
 export const addFriendValidator = validate(
   checkSchema(

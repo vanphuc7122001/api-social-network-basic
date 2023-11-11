@@ -1,3 +1,5 @@
+import { Express } from 'express'
+
 import bookmarkRouters from './bookmark.routes'
 import conversationRoutes from './conversation.routes'
 import friendRouters from './friend.routes'
@@ -7,7 +9,6 @@ import searchRouters from './search.routes'
 import staticRouters from './static.routes'
 import tweetRouters from './tweet.routes'
 import userRouters from './user.routes'
-import { Express } from 'express'
 
 export const initRoutes = (app: Express) => {
   app.use('/api/users', userRouters)

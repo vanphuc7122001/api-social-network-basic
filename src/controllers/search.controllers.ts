@@ -1,8 +1,8 @@
 import { ParamsDictionary } from 'express-serve-static-core'
 import { NextFunction, Request, Response } from 'express'
 import { SearchQuery } from '~/models/requests/Search.requests'
-import searchService from '~/services/search.service'
 import { SEARCH_MESSAGES } from '~/constants/messages'
+import searchService from '~/services/search.service'
 
 export const searchController = async (
   req: Request<ParamsDictionary, any, any, SearchQuery>,

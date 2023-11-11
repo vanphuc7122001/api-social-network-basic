@@ -7,13 +7,14 @@ import { initFolder } from './utils/files'
 import { UPLOAD_VIDEOS_DIR } from './constants/dir'
 import { createServer } from 'http'
 import { initialSocket } from './utils/socket'
+import { envConfig } from './constants/config'
 
 const app = express()
 
-const port = 4000
+const port = envConfig.port
 
 const corsOptions: CorsOptions = {
-  origin: process.env.CLIENT_URL,
+  origin: envConfig.clientUrl,
   methods: 'GET, POST, PUT, DELETE, PATH'
 }
 

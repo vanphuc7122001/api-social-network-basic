@@ -18,7 +18,7 @@ import {
   UpdateMeReqBody,
   VerifyForgotPassReq
 } from '~/models/requests/User.requests'
-
+import { envConfig } from '~/constants/config'
 import userService from '~/services/user.service'
 import User from '~/models/schemas/User.schema'
 import HTTP_STATUS from '~/constants/httpStatus'
@@ -41,7 +41,7 @@ export const loginController = async (
 export const oauthController = async (req: Request, res: Response, next: NextFunction) => {
   const { code } = req.query
   const { access_token, refresh_token, newUser } = await userService.oauth(code as string)
-  const url = `${process.env.CLIENT_REDIRECT_CALLBACK}?access_token=${access_token}&refresh_token=${refresh_token}&new_user=${newUser}`
+  const url = `${envConfig.clientRedirecCallback}?access_token=${access_token}&refresh_token=${refresh_token}&new_user=${newUser}`
   return res.redirect(url)
 }
 
@@ -154,7 +154,7 @@ export const verifyForgotPasswordController = (
   next: NextFunction
 ) => {
   const { forgot_password_token } = req.query
-  return res.redirect(`${process.env.CLIENT_URL}/reset-password?token=${forgot_password_token}`)
+  return res.redirect(`${envConfig.clientUrl}/reset-password?token=${forgot_password_token}`)
 }
 
 export const resetPasswordController = async (

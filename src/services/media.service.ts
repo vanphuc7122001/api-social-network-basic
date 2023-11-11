@@ -1,16 +1,14 @@
-import { config } from 'dotenv'
 import { Request } from 'express'
-import fsPromise from 'fs/promises'
-import path from 'path'
-import sharp from 'sharp'
-import mime from 'mime'
 import { UPLOAD_IMAGES_DIR } from '~/constants/dir'
 import { MediaType } from '~/constants/enums'
 import { Media } from '~/models/Other'
 import { getNameFromFullName, handleUploadImage, handleUploadSignleImage, handleUploadVideos } from '~/utils/files'
 import { uploadFileToS3 } from '~/utils/s3'
 import { CompleteMultipartUploadCommandOutput } from '@aws-sdk/client-s3'
-config()
+import fsPromise from 'fs/promises'
+import path from 'path'
+import sharp from 'sharp'
+import mime from 'mime'
 
 class MediaService {
   async handleUploadSignleImage(req: Request) {

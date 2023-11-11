@@ -2,8 +2,8 @@ import { ParamsDictionary } from 'express-serve-static-core'
 import { NextFunction, Request, Response } from 'express'
 import { FriendReqBody } from '~/models/requests/Friend.requests'
 import { TokenPayload } from '~/models/requests/User.requests'
-import friendService from '~/services/friend.service'
 import { FRIEND_MESSAGES } from '~/constants/messages'
+import friendService from '~/services/friend.service'
 
 export const addFriendControllers = async (
   req: Request<ParamsDictionary, any, FriendReqBody>,
