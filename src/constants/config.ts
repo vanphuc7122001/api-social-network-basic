@@ -3,8 +3,10 @@ import arg from 'minimist'
 
 const options = arg(process.argv.slice(2))
 
-export const isProduction = Boolean(options.production)
-
+export const isProduction = options.env === 'production'
+config({
+  path: options.env ? `.env.${options.env}` : '.env'
+})
 config()
 
 export const envConfig = {

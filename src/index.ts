@@ -1,5 +1,6 @@
 import express from 'express'
 import cors, { CorsOptions } from 'cors'
+import helmet from 'helmet'
 import { initRoutes } from './routes/index.routes'
 import { defaultErrorHandler } from './middlewares/error.middlewares'
 import databaseService from './services/database.service'
@@ -20,6 +21,7 @@ const corsOptions: CorsOptions = {
 
 initFolder()
 app.use(cors(corsOptions))
+app.use(helmet())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use('/static/videos', express.static(UPLOAD_VIDEOS_DIR))
