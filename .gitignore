@@ -5,3 +5,5 @@ uploads/
 .env.staging
 .env.production
 .env.development
+Dockerfile.dev
+Dockerfile.prod
