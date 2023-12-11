@@ -2,8 +2,8 @@ node_modules/
 dist/
 uploads/
 .env
-.env.staging
 .env.production
+.env.staging
 .env.development
-Dockerfile.dev
 Dockerfile.prod
+Dockerfile.dev
